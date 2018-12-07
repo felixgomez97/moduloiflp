@@ -59,7 +59,7 @@ def parser(sql):
 	# Se asume que la variable COLUMNAS almacena el resultado del query
 	"columnas.execute(sentencia1)"
 
-'''
+	'''
 	lista_columnas = []
 	elemento = columnas.fetchone()
  	
@@ -68,7 +68,7 @@ def parser(sql):
         elemento = columnas.fetchone()
 
 	diccionario_columnas[tabla_base] = lista_columnas
-'''
+	'''
 
 
 	#Lo mismo pero para el resto de las tablas
@@ -78,7 +78,7 @@ def parser(sql):
 		# Aqui se EJECUTA la SENTENCIA y lo que retorne se almacena
 		# Se asume que la variable COLUMNAS almacena el resultado del query
 		"columnas.execute(sentencia)"
-'''		
+		'''		
 		lista_columnas = []
 		elemento = columnas.fetchone()
 	 	
@@ -87,7 +87,7 @@ def parser(sql):
 	        elemento = columnas.fetchone()
 
 		diccionario_columnas[lista_tablas[i]] = lista_columnas
-'''
+		'''
 
 
 '''
