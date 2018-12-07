@@ -62,10 +62,10 @@ def parser(sql):
 	'''
 	lista_columnas = []
 	elemento = columnas.fetchone()
- 	
-    while elemento is not None:
-    	lista_columnas.append(elemento)
-        elemento = columnas.fetchone()
+
+	while elemento is not None:
+		lista_columnas.append(elemento)
+		elemento = columnas.fetchone()
 
 	diccionario_columnas[tabla_base] = lista_columnas
 	'''
@@ -81,10 +81,10 @@ def parser(sql):
 		'''		
 		lista_columnas = []
 		elemento = columnas.fetchone()
-	 	
-	    while elemento is not None:
-	    	lista_columnas.append(elemento)
-	        elemento = columnas.fetchone()
+		
+		while elemento is not None:
+			lista_columnas.append(elemento)
+			elemento = columnas.fetchone()
 
 		diccionario_columnas[lista_tablas[i]] = lista_columnas
 		'''
