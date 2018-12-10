@@ -1,0 +1,48 @@
+fgomez@ubuntu:~/modulo/moduloiflp$ python3 parser2.py 
+['SELECT', 'S.*', 'P.*', 'C.*', 'CO.*', 'T.*', 'FROM', 'SUBSCRIPTION', 'S', 'INNER', 'JOIN', 'PARTICIPANT', 'P', 'ON', 'P.NAME', '=', 'S.ID_PARTICIPANT', 'INNER', 'JOIN', 'COMPANY', 'C', 'ON', 'C.COMPANY', '=', 'P.ID_COMPANY', 'INNER', 'JOIN', 'COURSE', 'CO', 'ON', 'CO.COURSE', '=', 'S.ID_COURSE', 'INNER', 'JOIN', 'TOPIC', 'T', 'ON', 'T.TOPIC', '=', 'CO.ID_TOPIC;']
+
+
+Lista de tablas:
+['SUBSCRIPTION', 'S', 'PARTICIPANT', 'P', 'COMPANY', 'C', 'COURSE', 'CO', 'TOPIC', 'T']
+
+
+SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = LOWER('SUBSCRIPTION');
+SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = LOWER('PARTICIPANT');
+SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = LOWER('COMPANY');
+SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = LOWER('COURSE');
+SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = LOWER('TOPIC');
+
+Lista de Tablas con sus respectivas columnas:
+
+SUBSCRIPTION :  [('id_participant',), ('id_course',)]
+PARTICIPANT :  [('name',), ('job',), ('id_company',), ('party',), ('r_number',)]
+COMPANY :  [('company',), ('type',)]
+COURSE :  [('course',), ('length',), ('type',), ('id_topic',)]
+TOPIC :  [('topic',), ('elearning',), ('instructor',)]
+
+Lista de relaciones de clave foranea:
+constraint - tabla origen - columna origen - tabla destino - columna destino
+[('company_participant_fk', 'company', 'company', 'participant', 'id_company'), ('course_subscription_fk', 'course', 'course', 'subscription', 'id_course'), ('participant_subscription_fk', 'participant', 'name', 'subscription', 'id_participant'), ('topic_course_fk', 'topic', 'topic', 'course', 'id_topic')]
+
+
+{'SUBSCRIPTION': [('id_participant',), ('id_course',)], 'PARTICIPANT': [('name',), ('job',), ('id_company',), ('party',), ('r_number',)], 'COMPANY': [('company',), ('type',)], 'COURSE': [('course',), ('length',), ('type',), ('id_topic',)], 'TOPIC': [('topic',), ('elearning',), ('instructor',)]}
+
+
+('adams', 'erm', 'adams', 'researcher', 'scuf', 'no', 23, 'scuf', 'university', 'erm', 3, 'introductory', 'database', 'database', True, 'george')
+
+
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+SUBSCRIPTION(
+
