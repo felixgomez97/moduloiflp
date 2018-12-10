@@ -1,6 +1,5 @@
 import psycopg2
 
-
 class Connection():
 	#Se define el constructor de la clase, requiere como argumento la base de datos a dónde se quiere realizar la conexión
 	def __init__(self,PSQL_DB):
