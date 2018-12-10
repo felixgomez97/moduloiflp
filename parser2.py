@@ -114,7 +114,7 @@ def parser(sql):
 			y el contenido es la lista de las columnas de dicha tabla
 	'''
 
-	"---------------------------CONSULTA DE DATOS-----------------------------"
+	"--------------------------RELACIONES FORANEAS----------------------------"
 	#Relaciones de clave foránea
 	foraneos = bd.conn.cursor()
 	foraneos.execute(sql_foreign)
@@ -131,6 +131,19 @@ def parser(sql):
 	print("\n")
 
 
+	"-----------------GENERAR TUPLA CON NOMBRES DE COLUMNAS-------------------"
+	tupla_columnas = []
+
+	for tabla in sql_list:
+		nombre_tabla = tabla.replace(".*", "")
+		for i in range(0, len(lista_tablas), 2):
+			if (nombre_tabla == lista_tablas[i]):
+				tupla_columnas.append(diccionario_columnas[nombre_tabla])
+
+
+
+
+	"---------------------------CONSULTA DE DATOS-----------------------------"
 	#Datos de la BD
 	datos = bd.conn.cursor()
 	datos.execute(sql)
