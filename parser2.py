@@ -140,8 +140,8 @@ def parser(sql):
 			if (nombre_tabla == lista_tablas[i]):
 				tupla_columnas.append(diccionario_columnas[nombre_tabla])
 
-
-
+	print("#############################################")
+	print(tupla_columnas)
 
 	"---------------------------CONSULTA DE DATOS-----------------------------"
 	#Datos de la BD
@@ -150,24 +150,51 @@ def parser(sql):
 
 	lista_hechos = []
 	hecho = ""
+	
 
+	diccionario_datos = {}
 	elemento = datos.fetchone()
-	print(diccionario_columnas)
-	print("\n")
-	print(elemento)
-	print("\n")
 
+	while elemento is not None:
+		print("- - - - - - - - - COLUMNAS - - - - - - - - - -")
+		print(tupla_columnas)
+		print("- - - - - - - - - ELEMENTO - - - - - - - - - -")
+		print(elemento)
+
+		a = 0
+		for j in range(0, len(tupla_columnas)-1):
+			for k in range(0, len(tupla_columnas[j])):
+				#print(str(a)+"-----tupla-----"+str(j)+"-----columnas-----"+str(k))
+				#print(tupla_columnas[j])
+				#print(tupla_columnas[j][k])
+				#print(tupla_columnas[j][k][0])
+
+				diccionario_datos[tupla_columnas[j][k][0]] = elemento[a]
+				a = a+1
+
+		print("- - - - - - - - - - - - - - - - - - - - - - - -")
+		print("- - - - - - - - - - MERGE - - - - - - - - - - -")
+		print("- - - - - - - - - - - - - - - - - - - - - - - -")
+		print(diccionario_datos)		
+		print("\n")
+		
+		
+
+		elemento = datos.fetchone()
+
+
+	'''
 	while elemento is not None:
 		hecho = lista_tablas[0] + "("
 		
-		'''
+		
 		for tabla in diccionario_columnas:
 			hecho = hecho + tabla + "("
-		'''
+		
 
-		elemento = datos.fetchone()
+		
 		print(hecho)
-	
+	'''
 	
 
 
