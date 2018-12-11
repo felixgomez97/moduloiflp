@@ -179,9 +179,14 @@ def parser(sql):
 		print("\n")
 		
 		
+		"---- construccion del hecho -------"
+		hecho = lista_tablas[0] + "("
+
+
+
 
 		elemento = datos.fetchone()
-
+		lista_hechos.append(hecho)
 
 	'''
 	while elemento is not None:
@@ -196,7 +201,8 @@ def parser(sql):
 		print(hecho)
 	'''
 	
-
+	for i in lista_hechos:
+		print(i)
 
 
 "----------------------------EJECUCIÓN DEL MÓDULO-----------------------------"
@@ -213,6 +219,6 @@ parser(sql)
 
 '''
 Producto final - HECHO
-SUBSCRIPTION( PARTICIPANT(adam, researcher, COMPANY(scuf, university), no, 23),
-			  COURSE(erm, 3, introductory, TOPIC(database, true, george)))
+SUBSCRIPTION( PARTICIPANT(adam, researcher, COMPANY(scuf, university), 23),
+			  COURSE(erm, 3, introductory, TOPIC(database, true, george))) = no
 '''
