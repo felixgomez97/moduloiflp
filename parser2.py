@@ -30,6 +30,31 @@ sql_foreign = "SELECT 	TC.CONSTRAINT_NAME, "\
 					  "INNER JOIN information_schema.key_column_usage KCU_fuente "\
 						"ON KCU_fuente.CONSTRAINT_NAME = RC.CONSTRAINT_NAME;" 
 
+
+
+
+
+def constructor(hecho, diccionario_columnas, lista_foraneos, diccionario_datos):
+	"---- construccion del hecho -------"
+	for clave_tabla in diccionario_columnas:
+		for i in range(0,len(diccionario_columnas[clave_tabla])):
+			columna = diccionario_columnas[clave_tabla][i][0].lower()
+			tabla = clave_tabla.lower()
+
+			ban = 0
+			for relacion in lista_foraneos:
+				if (tabla == relacion[3]) and (columna == relacion[4]):
+					ban = 1
+
+			if(ban == 0):
+				for relacion in lista_foraneos:
+					if(relacion[2] == columna):
+						columna_datos = relacion[4]
+				hecho = hecho + str(diccionario_datos[columna_datos] + ", ")
+
+	return hecho
+
+
 def parser(sql):
 	#Se separa el string SQL por el token "espacio" en una lista
 	sql_list = sql.split(' ')
@@ -150,17 +175,11 @@ def parser(sql):
 
 	lista_hechos = []
 	hecho = ""
-	
 
 	diccionario_datos = {}
 	elemento = datos.fetchone()
 
 	while elemento is not None:
-		print("- - - - - - - - - COLUMNAS - - - - - - - - - -")
-		print(tupla_columnas)
-		print("- - - - - - - - - ELEMENTO - - - - - - - - - -")
-		print(elemento)
-
 		a = 0
 		for j in range(0, len(tupla_columnas)-1):
 			for k in range(0, len(tupla_columnas[j])):
@@ -172,18 +191,20 @@ def parser(sql):
 				diccionario_datos[tupla_columnas[j][k][0]] = elemento[a]
 				a = a+1
 
+		
 		print("- - - - - - - - - - - - - - - - - - - - - - - -")
 		print("- - - - - - - - - - MERGE - - - - - - - - - - -")
 		print("- - - - - - - - - - - - - - - - - - - - - - - -")
-		print(diccionario_datos)		
+		print(diccionario_datos)
 		print("\n")
 		
 		
-		"---- construccion del hecho -------"
-		hecho = lista_tablas[0] + "("
+		hecho = lista_tablas[0].lower() + "("
+		
+		hecho = constructor(hecho, diccionario_columnas, lista_foraneos, diccionario_datos)
 
 
-
+		#input()
 
 		elemento = datos.fetchone()
 		lista_hechos.append(hecho)
