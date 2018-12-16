@@ -1,5 +1,6 @@
 from connection import *
 import re
+import copy
 
 
 sql="SELECT S.*, P.*, C.*, CO.*, T.* "\
@@ -87,13 +88,41 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 '''
 
 
+
+'''
+Producto final - HECHO
+SUBSCRIPTION( PARTICIPANT(adam, researcher, COMPANY(scuf, university), 23),
+			  COURSE(erm, 3, introductory, TOPIC(database, true, george))) = no
+'''
+
 def constructor(hecho, inicio, lista_tablas, diccionario_columnas, 
 				lista_foraneos, diccionario_datos):
 	"---- construccion del hecho -------"
+	#Itera por los nombres de tablas en el orden del SELECT
 	for a in range(inicio, len(lista_tablas),2):
-		clave_tabla = lista_tablas[a]
-		for columnas_tabla in diccionario_columnas[clave_tabla]:
-			print(columnas_tabla)
+		tabla = lista_tablas[a]
+		#Consulta los nombres de columna de cada tabla
+		columna_posicion = 0
+		for columna in diccionario_columnas[tabla]:
+			#Itera para comparar si existe alguna FK con esa tabla/columna
+			for foraneos in lista_foraneos:
+				if (tabla == foraneos[3] and columna == foraneos[4]):
+					#Si existe, vuelve a llamar a la funcion constructor
+					#para buscar a mas profundidad
+					diccionario_columnas_rec = diccionario_columnas.copy()
+					diccionario_columnas_rec[tabla].pop(columna_posicion)
+
+					hecho = hecho + tabla + "( "
+					hecho = constructor(hecho, a, lista_tablas.copy(), 
+							diccionario_columnas_rec.copy(), 
+							lista_foraneos.copy(), diccionario_datos)
+					continue
+
+			hecho = hecho + str(diccionario_datos[columna]) + ', '
+
+			columna_posicion = columna_posicion +1
+
+
 
 
 	return hecho
@@ -242,7 +271,7 @@ def parser(sql):
 
 	while elemento is not None:
 		a = 0
-		for j in range(0, len(tupla_columnas)-1):
+		for j in range(0, len(tupla_columnas)):
 			for k in range(0, len(tupla_columnas[j])):
 				#print(str(a)+"-----tupla-----"+str(j)+"-----columnas-----"+str(k))
 				#print(tupla_columnas[j])
@@ -259,18 +288,15 @@ def parser(sql):
 		print(diccionario_datos)
 		print("\n")
 
-
 		hecho = lista_tablas[0].lower() + "("
 		
 		hecho = constructor(hecho, 0, lista_tablas.copy(), 
-							diccionario_columnas.copy(), 
+							copy.deepcopy(diccionario_columnas), 
 							lista_foraneos.copy(), diccionario_datos)
 
-		print("HECHO -> " + hecho)
+		print("\nHECHO -> " + hecho)
 
 		#input()
-
-
 
 		elemento = datos.fetchone()
 		lista_hechos.append(hecho)
@@ -287,9 +313,12 @@ def parser(sql):
 		
 		print(hecho)
 	'''
-	
+
+
+	print("\n------------------- HECHOS -------------------")
 	for i in lista_hechos:
-		print(i)
+		print(i + "\n")
+
 
 
 "----------------------------EJECUCIÓN DEL MÓDULO-----------------------------"
