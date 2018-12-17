@@ -95,6 +95,7 @@ SUBSCRIPTION( PARTICIPANT(adam, researcher, COMPANY(scuf, university), 23),
 			  COURSE(erm, 3, introductory, TOPIC(database, true, george))) = no
 '''
 
+'''
 def constructor(hecho, inicio, lista_tablas, diccionario_columnas, 
 				lista_foraneos, diccionario_datos):
 	"---- construccion del hecho -------"
@@ -122,9 +123,66 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 
 			columna_posicion = columna_posicion +1
 
+	return hecho
+'''
+
+def constructor(hecho, inicio, lista_tablas, diccionario_columnas, 
+				lista_foraneos, diccionario_datos):
+	print(diccionario_columnas)
+	print("\n")
+	print(diccionario_datos)
+
+	lista_hechos_tabla = []
+
+	for a in range(0, len(lista_tablas),2):
+		tabla = lista_tablas[a]
+		hecho_tabla = tabla + "( "
+		for b in range(0, len(diccionario_columnas[tabla])):
+			hecho_tabla = hecho_tabla +\
+						  str(diccionario_datos[diccionario_columnas[tabla][b]])
+			if b+1 < len(diccionario_columnas[tabla]) :
+				hecho_tabla = hecho_tabla + " , "
+		hecho_tabla = hecho_tabla + " )"
+		lista_hechos_tabla.append(hecho_tabla)
+
+	for i in lista_hechos_tabla:
+		print(i)
+
+	input()
+
+
+	for i in lista_foraneos:
+		
 
 
 
+	'''
+	
+	"---- construccion del hecho -------"
+	#Itera por los nombres de tablas en el orden del SELECT
+	for a in range(inicio, len(lista_tablas),2):
+		tabla = lista_tablas[a]
+		#Consulta los nombres de columna de cada tabla
+		columna_posicion = 0
+		for columna in diccionario_columnas[tabla]:
+			#Itera para comparar si existe alguna FK con esa tabla/columna
+			for foraneos in lista_foraneos:
+				if (tabla == foraneos[3] and columna == foraneos[4]):
+					#Si existe, vuelve a llamar a la funcion constructor
+					#para buscar a mas profundidad
+					diccionario_columnas_rec = diccionario_columnas.copy()
+					diccionario_columnas_rec[tabla].pop(columna_posicion)
+
+					hecho = hecho + tabla + "( "
+					hecho = constructor(hecho, a, lista_tablas.copy(), 
+							diccionario_columnas_rec.copy(), 
+							lista_foraneos.copy(), diccionario_datos)
+					continue
+
+			hecho = hecho + str(diccionario_datos[columna]) + ', '
+
+			columna_posicion = columna_posicion +1
+	'''
 	return hecho
 
 
