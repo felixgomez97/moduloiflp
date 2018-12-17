@@ -132,7 +132,24 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 	print("\n")
 	print(diccionario_datos)
 	print("\n")
-	print(lista_foraneos)
+
+	print("TablaOrigen - ColumnaOrigen - TablaDestino - ColumnaDestino")
+	for lf in lista_foraneos :
+		print(lf[1]+" - "+lf[2]+" - "+lf[3]+" - "+lf[4])
+	print("\n")
+
+	# PRUEBA PRUEBA
+	aux = lista_foraneos[1]
+	lista_foraneos[1] = lista_foraneos[3]
+	lista_foraneos[3] = aux
+
+	print("\n---------------------------------\n")
+	print("TablaOrigen - ColumnaOrigen - TablaDestino - ColumnaDestino")
+	for lf in lista_foraneos :
+		print(lf[1]+" - "+lf[2]+" - "+lf[3]+" - "+lf[4])
+	print("\n")
+
+
 
 	lista_hechos_tabla = []
 	lista_hechos_tabla_base = []
@@ -193,45 +210,58 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 			if tabla_posicion_base != -1 and columna_posicion_base != -1 :
 				break
 
-		print("tablaorigen: "+tabla_origen)
-		print("tabladestino: "+tabla_destino)
-		print("columnaorigen: "+columna_origen)
-		print("columnadestino: "+columna_destino)
-		
-		print("tablaposibase: "+str(tabla_posicion_base))
-		print("columnaposibase: "+str(columna_posicion_base))
+		print("\n----- Nombres de Tablas/Columnas -----")	
+		print("tabla_origen: "+tabla_origen)
+		print("columna_origen: "+columna_origen)
+		print("tabla_destino: "+tabla_destino)
+		print("columna_destino: "+columna_destino)
+		print("\n----- Posiciones -----")
+		print("tabla_posibase: "+str(tabla_posicion_base))
+		print("columna_posibase: "+str(columna_posicion_base))
 
 		
 		#Construccion de Hecho
-		print("\n---- Construccion de Hecho -----")
+		print("\n----- Construccion de Hecho -----")
 		for posicion_destino in range(0, len(lista_hechos_tabla)) :
 			split_destino = lista_hechos_tabla[posicion_destino].split(' ')
+			#Se replica lo mismo para la tabla base
+			split_destino_base = lista_hechos_tabla_base[posicion_destino].split(' ')
+
 			for tabla in split_destino :
 				if tabla == tabla_destino :
 					#Nos posicionamos sobre participant
 					#Se buscara al contenido de company
-					print("tabla destino: " + tabla)
 					columna_destino = split_destino[columna_posicion_base]
+					columna_destino_base = split_destino_base[columna_posicion_base]
 
 					contenido_origen = ""
 					for posicion_origen in range(0, len(lista_hechos_tabla)) :
 						split_origen = lista_hechos_tabla[posicion_origen].split(' ')
+						#Se replica lo mismo para la tabla base
+						split_origen_base = lista_hechos_tabla_base[posicion_origen].split(' ')
+
 						for tabla_ori in split_origen:
 							if tabla_ori == tabla_origen:
 								contenido_origen = lista_hechos_tabla[posicion_origen]
-								print("contenido origen: " + contenido_origen)
-								contenido_base = lista_hechos_tabla_base[posicion_origen]
+								contenido_origen_base = lista_hechos_tabla_base[posicion_origen]
 								#break
 
-					print("posicion_destino: " + str(posicion_destino))
-					print("contenido_posicion_destino: " + str(lista_hechos_tabla[posicion_destino]))
+					print("contenido_origen: " + contenido_origen)
+					print("\tcontenido_origen_base: " + contenido_origen_base)
+					print("contenido_destino: " + str(lista_hechos_tabla[posicion_destino]))					
+					print("tabla_destino: " + tabla)					
 					print("columna_destino: " + columna_destino)
+					print("posicion_destino: " + str(posicion_destino))
 					lista_hechos_tabla[posicion_destino] = lista_hechos_tabla[posicion_destino].replace(columna_destino,contenido_origen)
-					lista_hechos_tabla_base[posicion_destino] = lista_hechos_tabla_base[posicion_destino].replace(columna_destino,contenido_origen)
+					lista_hechos_tabla_base[posicion_destino] = lista_hechos_tabla_base[posicion_destino].replace(columna_destino_base,contenido_origen_base)
+					print("\nColumna substituida:\n" + str(lista_hechos_tabla[posicion_destino]))
+					print("\nColumna BASE substituida:\n" + str(lista_hechos_tabla_base[posicion_destino]))
+
+		print("\n---------------------------------\n")
 		input()
 
 	print("\n")
-	print("\n---- Impresion de Hecho -----")
+	print("\n----- Impresion de Hecho -----")
 	for i in lista_hechos_tabla:
 		print(i)
 		print("\n")
