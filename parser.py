@@ -33,99 +33,6 @@ sql_foreign = "SELECT 	TC.CONSTRAINT_NAME, "\
 						"ON KCU_fuente.CONSTRAINT_NAME = RC.CONSTRAINT_NAME;" 
 
 
-
-
-'''
-def constructor(hecho, diccionario_columnas, lista_foraneos, diccionario_datos):
-	"---- construccion del hecho -------"
-	for clave_tabla in diccionario_columnas:
-		for i in range(0,len(diccionario_columnas[clave_tabla])):
-			columna = diccionario_columnas[clave_tabla][i][0].lower()
-			tabla = clave_tabla.lower()
-
-			ban = 0
-			for relacion in lista_foraneos:
-				if (tabla == relacion[3]) and (columna == relacion[4]):
-					ban = 1
-
-			if(ban == 0):
-				for relacion in lista_foraneos:
-					if(relacion[2] == columna):
-						columna_datos = relacion[4]
-				hecho = hecho + str(diccionario_datos[columna_datos] + ", ")
-
-	return hecho
-'''
-
-'''
-def constructor(hecho, inicio, lista_tablas, diccionario_columnas, 
-				lista_foraneos, diccionario_datos):
-	"---- construccion del hecho -------"
-	for a in range(inicio,len(lista_tablas),2):
-		clave_tabla = lista_tablas[a]
-		for i in range(0,len(diccionario_columnas[clave_tabla])):
-			print(diccionario_columnas[clave_tabla])
-			print("range(0,len(diccionario_columnas[clave_tabla])) = "+str(i))	
-			columna = diccionario_columnas[clave_tabla][i]
-			tabla = clave_tabla
-
-			ban = 0
-			for relacion in lista_foraneos:
-				if (tabla == relacion[3]) and (columna == relacion[4]):
-					ban = 1
-					diccionario_columnas[clave_tabla].pop(0)
-					hecho = constructor(hecho, a, lista_tablas, diccionario_columnas, 
-										lista_foraneos, diccionario_datos)
-
-			if(ban == 0):
-				for relacion in lista_foraneos:
-					if(relacion[2] == columna):
-						columna_datos = relacion[4]
-				hecho = hecho + str(diccionario_datos[relacion[4]] + ", ")
-				print("HECHO -> " + hecho)
-
-	return hecho
-'''
-
-
-
-'''
-Producto final - HECHO
-SUBSCRIPTION( PARTICIPANT(adam, researcher, COMPANY(scuf, university), 23),
-			  COURSE(erm, 3, introductory, TOPIC(database, true, george))) = no
-'''
-
-'''
-def constructor(hecho, inicio, lista_tablas, diccionario_columnas, 
-				lista_foraneos, diccionario_datos):
-	"---- construccion del hecho -------"
-	#Itera por los nombres de tablas en el orden del SELECT
-	for a in range(inicio, len(lista_tablas),2):
-		tabla = lista_tablas[a]
-		#Consulta los nombres de columna de cada tabla
-		columna_posicion = 0
-		for columna in diccionario_columnas[tabla]:
-			#Itera para comparar si existe alguna FK con esa tabla/columna
-			for foraneos in lista_foraneos:
-				if (tabla == foraneos[3] and columna == foraneos[4]):
-					#Si existe, vuelve a llamar a la funcion constructor
-					#para buscar a mas profundidad
-					diccionario_columnas_rec = diccionario_columnas.copy()
-					diccionario_columnas_rec[tabla].pop(columna_posicion)
-
-					hecho = hecho + tabla + "( "
-					hecho = constructor(hecho, a, lista_tablas.copy(), 
-							diccionario_columnas_rec.copy(), 
-							lista_foraneos.copy(), diccionario_datos)
-					continue
-
-			hecho = hecho + str(diccionario_datos[columna]) + ', '
-
-			columna_posicion = columna_posicion +1
-
-	return hecho
-'''
-
 def constructor(hecho, inicio, lista_tablas, diccionario_columnas, 
 				lista_foraneos, diccionario_datos):
 	print(diccionario_columnas)
@@ -133,15 +40,16 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 	print(diccionario_datos)
 	print("\n")
 
-	print("TablaOrigen - ColumnaOrigen - TablaDestino - ColumnaDestino")
-	for lf in lista_foraneos :
-		print(lf[1]+" - "+lf[2]+" - "+lf[3]+" - "+lf[4])
-	print("\n")
+	#Metodo para ordenar Lista de Foraneos de relaciones más a menos atómicas 
+	for i in range(0, len(lista_foraneos)):
+		tablaorigen = lista_foraneos[i][3]
+		for j in range(0, len(lista_foraneos)):
+			tabladestino = lista_foraneos[j][1]
+			if tablaorigen == tabladestino :
+				aux = lista_foraneos[j]
+				lista_foraneos[j] = lista_foraneos[i]
+				lista_foraneos[i] = aux
 
-	# PRUEBA PRUEBA
-	aux = lista_foraneos[1]
-	lista_foraneos[1] = lista_foraneos[3]
-	lista_foraneos[3] = aux
 
 	print("\n---------------------------------\n")
 	print("TablaOrigen - ColumnaOrigen - TablaDestino - ColumnaDestino")
@@ -183,7 +91,7 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 	for i in lista_hechos_tabla_base:
 		print(i)
 
-	input()
+	#input()
 
 	#FORANEOS
 	#constraint - tabla origen - columna origen - tabla destino - columna destino
@@ -210,6 +118,7 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 			if tabla_posicion_base != -1 and columna_posicion_base != -1 :
 				break
 
+		'''	Impresiones de prueba/verificación	
 		print("\n----- Nombres de Tablas/Columnas -----")	
 		print("tabla_origen: "+tabla_origen)
 		print("columna_origen: "+columna_origen)
@@ -218,8 +127,16 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 		print("\n----- Posiciones -----")
 		print("tabla_posibase: "+str(tabla_posicion_base))
 		print("columna_posibase: "+str(columna_posicion_base))
+		'''
 
-		
+		'''
+			ACLARACIÓN
+		Paralelamente se construye el hecho con los datos de la consulta
+		se construye el hecho con los nombres de las tablas y columnas
+		a fin de poder ir consultando en cada iteración las posiciones
+		relativas
+		'''
+
 		#Construccion de Hecho
 		print("\n----- Construccion de Hecho -----")
 		for posicion_destino in range(0, len(lista_hechos_tabla)) :
@@ -229,8 +146,8 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 
 			for tabla in split_destino :
 				if tabla == tabla_destino :
-					#Nos posicionamos sobre participant
-					#Se buscara al contenido de company
+					#Nos posicionamos sobre la columna destino
+					#Buscando el correspondiente contenido 
 					columna_destino = split_destino[columna_posicion_base]
 					columna_destino_base = split_destino_base[columna_posicion_base]
 
@@ -246,36 +163,27 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 								contenido_origen_base = lista_hechos_tabla_base[posicion_origen]
 								#break
 
+					'''	Impresiones de prueba/verificación		
 					print("contenido_origen: " + contenido_origen)
 					print("\tcontenido_origen_base: " + contenido_origen_base)
 					print("contenido_destino: " + str(lista_hechos_tabla[posicion_destino]))					
 					print("tabla_destino: " + tabla)					
 					print("columna_destino: " + columna_destino)
 					print("posicion_destino: " + str(posicion_destino))
+					'''
 					lista_hechos_tabla[posicion_destino] = lista_hechos_tabla[posicion_destino].replace(columna_destino,contenido_origen)
 					lista_hechos_tabla_base[posicion_destino] = lista_hechos_tabla_base[posicion_destino].replace(columna_destino_base,contenido_origen_base)
 					print("\nColumna substituida:\n" + str(lista_hechos_tabla[posicion_destino]))
 					print("\nColumna BASE substituida:\n" + str(lista_hechos_tabla_base[posicion_destino]))
 
 		print("\n---------------------------------\n")
-		input()
+		#input()
 
-	print("\n")
-	print("\n----- Impresion de Hecho -----")
-	for i in lista_hechos_tabla:
-		print(i)
-		print("\n")
-	print("\n")
-
-	input()
-
-
-
-
+	hecho = lista_hechos_tabla[0]
 	return hecho
 
 
-
+#Función principal PARSER
 def parser(sql):
 	#Se separa el string SQL por el token "espacio" en una lista
 	sql_list = sql.split(' ')
@@ -368,7 +276,10 @@ def parser(sql):
 	lista_foraneos = []
 	
 	while foraneo is not None:
-		lista_foraneos.append(foraneo)
+		lista = []
+		for valor in foraneo:
+			lista.append(valor)
+		lista_foraneos.append(lista)
 		foraneo = foraneos.fetchone()
 
 	print("\nLista de relaciones de clave foranea:")
@@ -422,11 +333,6 @@ def parser(sql):
 		a = 0
 		for j in range(0, len(tupla_columnas)):
 			for k in range(0, len(tupla_columnas[j])):
-				#print(str(a)+"-----tupla-----"+str(j)+"-----columnas-----"+str(k))
-				#print(tupla_columnas[j])
-				#print(tupla_columnas[j][k])
-				#print(tupla_columnas[j][k][0])
-
 				diccionario_datos[tupla_columnas[j][k][0]] = elemento[a]
 				a = a+1
 
@@ -442,25 +348,8 @@ def parser(sql):
 							copy.deepcopy(diccionario_columnas), 
 							lista_foraneos.copy(), diccionario_datos)
 
-		print("\nHECHO -> " + hecho)
-
-		#input()
-
 		elemento = datos.fetchone()
 		lista_hechos.append(hecho)
-
-	'''
-	while elemento is not None:
-		hecho = lista_tablas[0] + "("
-		
-		
-		for tabla in diccionario_columnas:
-			hecho = hecho + tabla + "("
-		
-
-		
-		print(hecho)
-	'''
 
 
 	print("\n------------------- HECHOS -------------------")
@@ -471,18 +360,8 @@ def parser(sql):
 
 "----------------------------EJECUCIÓN DEL MÓDULO-----------------------------"
 
-#Se ejecuta la función PARSER
+#Ejecución de la función PARSER
 parser(sql)
 
 
 "------------------------------------FIN--------------------------------------"
-
-#Copia de la consulta hecha en PGADMIN3
-#"adams";"srw";"adams";"researcher";"scuf";"no";23;"scuf";"university";"srw";3;"advanced";"ilp";"ilp";f;"muggleton"
-#"blake";"cso";"blake";"president";"jvt";"yes";5;"jvt";"commercial";"cso";2;"introductory";"database";"database";t;"george"
-
-'''
-Producto final - HECHO
-SUBSCRIPTION( PARTICIPANT(adam, researcher, COMPANY(scuf, university), 23),
-			  COURSE(erm, 3, introductory, TOPIC(database, true, george))) = no
-'''
