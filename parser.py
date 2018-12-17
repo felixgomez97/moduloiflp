@@ -168,6 +168,8 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 
 	input()
 
+	#FORANEOS
+	#constraint - tabla origen - columna origen - tabla destino - columna destino
 	for relacion in lista_foraneos:
 		#Iteracion dentro de los hechos base con nombres de columnas
 		for hecho_tabla_base in lista_hechos_tabla_base:
@@ -178,46 +180,64 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 			#Busqueda de la posicion relativa a esos datos en el original
 			for posicion in range(0,len(split_hecho_tabla_base)):
 				if 	(split_hecho_tabla_base[posicion] == relacion[4]) and (columna_posicion_base == -1):
+					columna_origen = relacion[2]
+					columna_destino = relacion[4]
 					columna_posicion_base = posicion
 				elif (split_hecho_tabla_base[posicion] == relacion[3]) and (tabla_posicion_base == -1): 
-					tabla_destino_nombre = relacion[3]
+					tabla_origen = relacion[1]
+					tabla_destino = relacion[3]
 					tabla_posicion_base = posicion
 				
 				if tabla_posicion_base != -1 and columna_posicion_base != -1 :
 					break
 			if tabla_posicion_base != -1 and columna_posicion_base != -1 :
 				break
-		print("tablaposinombre: "+str(tabla_destino_nombre))
+
+		print("tablaorigen: "+tabla_origen)
+		print("tabladestino: "+tabla_destino)
+		print("columnaorigen: "+columna_origen)
+		print("columnadestino: "+columna_destino)
+		
 		print("tablaposibase: "+str(tabla_posicion_base))
 		print("columnaposibase: "+str(columna_posicion_base))
 
-		'''
-		#Teniendo las posiciones relativas
-		#Se hace la misma busqueda en los hechos iniciales
-		for hecho_tabla in lista_hechos_tabla:
-			#Separacion de palabras por espacios
-			split_hecho_tabla = hecho_tabla.split(' ')
-			tabla_posicion = -1
-			columna_posicion = -1
-			#Busqueda de la posicion relativa a esos datos en el original
-			for posicion in range(0,len(split_hecho_tabla)):
-				if 	(split_hecho_tabla[posicion] == relacion[2]) and (columna_posicion == -1):
-					columna_posicion = posicion
-				elif (split_hecho_tabla[posicion] == relacion[1]) and (tabla_posicion == -1): 
-					tabla_posicion = posicion
-				
-				if tabla_posicion != -1 and columna_posicion != -1 :
-					break
-			if tabla_posicion != -1 and columna_posicion != -1 :
-				break
-		print("tablaposi: "+str(tabla_posicion))
-		print("columnaposi: "+str(columna_posicion))
-		'''
-
+		
 		#Construccion de Hecho
-		#for i in lista_hechos_tabla :
+		print("\n---- Construccion de Hecho -----")
+		for posicion_destino in range(0, len(lista_hechos_tabla)) :
+			split_destino = lista_hechos_tabla[posicion_destino].split(' ')
+			for tabla in split_destino :
+				if tabla == tabla_destino :
+					#Nos posicionamos sobre participant
+					#Se buscara al contenido de company
+					print("tabla destino: " + tabla)
+					columna_destino = split_destino[columna_posicion_base]
 
+					contenido_origen = ""
+					for posicion_origen in range(0, len(lista_hechos_tabla)) :
+						split_origen = lista_hechos_tabla[posicion_origen].split(' ')
+						for tabla_ori in split_origen:
+							if tabla_ori == tabla_origen:
+								contenido_origen = lista_hechos_tabla[posicion_origen]
+								print("contenido origen: " + contenido_origen)
+								contenido_base = lista_hechos_tabla_base[posicion_origen]
+								#break
 
+					print("posicion_destino: " + str(posicion_destino))
+					print("contenido_posicion_destino: " + str(lista_hechos_tabla[posicion_destino]))
+					print("columna_destino: " + columna_destino)
+					lista_hechos_tabla[posicion_destino] = lista_hechos_tabla[posicion_destino].replace(columna_destino,contenido_origen)
+					lista_hechos_tabla_base[posicion_destino] = lista_hechos_tabla_base[posicion_destino].replace(columna_destino,contenido_origen)
+		input()
+
+	print("\n")
+	print("\n---- Impresion de Hecho -----")
+	for i in lista_hechos_tabla:
+		print(i)
+		print("\n")
+	print("\n")
+
+	input()
 
 
 
