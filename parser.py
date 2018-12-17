@@ -131,58 +131,97 @@ def constructor(hecho, inicio, lista_tablas, diccionario_columnas,
 	print(diccionario_columnas)
 	print("\n")
 	print(diccionario_datos)
+	print("\n")
+	print(lista_foraneos)
 
 	lista_hechos_tabla = []
+	lista_hechos_tabla_base = []
 
 	for a in range(0, len(lista_tablas),2):
 		tabla = lista_tablas[a]
-		hecho_tabla = tabla + "( "
+		hecho_tabla = tabla + " ( "
+		hecho_tabla_base = tabla + " ( "
+
 		for b in range(0, len(diccionario_columnas[tabla])):
 			hecho_tabla = hecho_tabla +\
 						  str(diccionario_datos[diccionario_columnas[tabla][b]])
+
+			hecho_tabla_base = hecho_tabla_base +\
+								diccionario_columnas[tabla][b]
+
 			if b+1 < len(diccionario_columnas[tabla]) :
 				hecho_tabla = hecho_tabla + " , "
-		hecho_tabla = hecho_tabla + " )"
-		lista_hechos_tabla.append(hecho_tabla)
+				hecho_tabla_base = hecho_tabla_base + " , "
 
+		hecho_tabla = hecho_tabla + " )"
+		hecho_tabla_base = hecho_tabla_base + " )"
+
+		lista_hechos_tabla.append(hecho_tabla)
+		lista_hechos_tabla_base.append(hecho_tabla_base)
+
+	print("\n")
 	for i in lista_hechos_tabla:
+		print(i)
+	print("\n")
+	for i in lista_hechos_tabla_base:
 		print(i)
 
 	input()
 
+	for relacion in lista_foraneos:
+		#Iteracion dentro de los hechos base con nombres de columnas
+		for hecho_tabla_base in lista_hechos_tabla_base:
+			#Separacion de palabras por espacios
+			split_hecho_tabla_base = hecho_tabla_base.split(' ') 	
+			tabla_posicion_base = -1
+			columna_posicion_base = -1
+			#Busqueda de la posicion relativa a esos datos en el original
+			for posicion in range(0,len(split_hecho_tabla_base)):
+				if 	(split_hecho_tabla_base[posicion] == relacion[4]) and (columna_posicion_base == -1):
+					columna_posicion_base = posicion
+				elif (split_hecho_tabla_base[posicion] == relacion[3]) and (tabla_posicion_base == -1): 
+					tabla_destino_nombre = relacion[3]
+					tabla_posicion_base = posicion
+				
+				if tabla_posicion_base != -1 and columna_posicion_base != -1 :
+					break
+			if tabla_posicion_base != -1 and columna_posicion_base != -1 :
+				break
+		print("tablaposinombre: "+str(tabla_destino_nombre))
+		print("tablaposibase: "+str(tabla_posicion_base))
+		print("columnaposibase: "+str(columna_posicion_base))
 
-	for i in lista_foraneos:
-		
+		'''
+		#Teniendo las posiciones relativas
+		#Se hace la misma busqueda en los hechos iniciales
+		for hecho_tabla in lista_hechos_tabla:
+			#Separacion de palabras por espacios
+			split_hecho_tabla = hecho_tabla.split(' ')
+			tabla_posicion = -1
+			columna_posicion = -1
+			#Busqueda de la posicion relativa a esos datos en el original
+			for posicion in range(0,len(split_hecho_tabla)):
+				if 	(split_hecho_tabla[posicion] == relacion[2]) and (columna_posicion == -1):
+					columna_posicion = posicion
+				elif (split_hecho_tabla[posicion] == relacion[1]) and (tabla_posicion == -1): 
+					tabla_posicion = posicion
+				
+				if tabla_posicion != -1 and columna_posicion != -1 :
+					break
+			if tabla_posicion != -1 and columna_posicion != -1 :
+				break
+		print("tablaposi: "+str(tabla_posicion))
+		print("columnaposi: "+str(columna_posicion))
+		'''
+
+		#Construccion de Hecho
+		#for i in lista_hechos_tabla :
 
 
 
-	'''
-	
-	"---- construccion del hecho -------"
-	#Itera por los nombres de tablas en el orden del SELECT
-	for a in range(inicio, len(lista_tablas),2):
-		tabla = lista_tablas[a]
-		#Consulta los nombres de columna de cada tabla
-		columna_posicion = 0
-		for columna in diccionario_columnas[tabla]:
-			#Itera para comparar si existe alguna FK con esa tabla/columna
-			for foraneos in lista_foraneos:
-				if (tabla == foraneos[3] and columna == foraneos[4]):
-					#Si existe, vuelve a llamar a la funcion constructor
-					#para buscar a mas profundidad
-					diccionario_columnas_rec = diccionario_columnas.copy()
-					diccionario_columnas_rec[tabla].pop(columna_posicion)
 
-					hecho = hecho + tabla + "( "
-					hecho = constructor(hecho, a, lista_tablas.copy(), 
-							diccionario_columnas_rec.copy(), 
-							lista_foraneos.copy(), diccionario_datos)
-					continue
 
-			hecho = hecho + str(diccionario_datos[columna]) + ', '
 
-			columna_posicion = columna_posicion +1
-	'''
 	return hecho
 
 
@@ -310,6 +349,8 @@ def parser(sql):
 	hecho = ""
 
 	diccionario_datos = {}
+	diccionario_hechos_tabla = {}
+
 	elemento = datos.fetchone()
 
 
@@ -341,9 +382,8 @@ def parser(sql):
 
 		print("\n")
 		print("- - - - - - - - - - - - - - - - - - - - - - - -")
-		print("- - - - - - - - - - MERGE - - - - - - - - - - -")
+		print("- - - - - - - - - ELEMENTOS - - - - - - - - - -")
 		print("- - - - - - - - - - - - - - - - - - - - - - - -")
-		print(diccionario_datos)
 		print("\n")
 
 		hecho = lista_tablas[0].lower() + "("
